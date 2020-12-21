@@ -17,21 +17,31 @@ namespace My_Application
             int day = persianCalandar.GetDayOfMonth(DateTime.Now);
 
             var datePersian = ($"{year}/{month}/{day}");
-            var datee = datePersian.Substring(2, 2);
             Console.ForegroundColor = ConsoleColor.Blue;
-            Console.WriteLine(datee);
-            Console.ResetColor();
-
-            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(datePersian);
             Console.ResetColor();
 
             Data.DatabaseContext database = new Data.DatabaseContext();
 
-            var datata = database.GetDatas.ToArray();
+            var date = database.GetDatas.ToArray();
+
+            var select = database.GetDatas.Select(c => c.Date.Substring(0, 2)).Distinct();
+
+            foreach (var number in select)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(number);
+                Console.ResetColor();
+
+            }
+
+            Console.Write("Enter Years:");
+            var getDate = Console.ReadLine();
+
+            var data = database.GetDatas.ToArray();
 
             IEnumerable<IGrouping<string, Models.GetData>> query =
-            from i in datata
+            from i in data
             group i by i.Code;
 
             foreach (var group in query)
@@ -41,7 +51,7 @@ namespace My_Application
                 foreach (Models.GetData getData in group)
                 {
                     var dateInData = getData.Date.Substring(0, 2);
-                    if (dateInData == datee)
+                    if (dateInData == getDate)
                     {
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.WriteLine($"{getData.Date}");
@@ -49,6 +59,7 @@ namespace My_Application
                     }
                 }
             }
+
         }
     }
 }
